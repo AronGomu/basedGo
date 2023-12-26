@@ -19,6 +19,22 @@ func main() {
 		log.Fatal("basedGo2 has no command line argument !")
 	}
 
+	if len(os.Args) > 2 {
+		fmt.Println("HELLOS")
+		fmt.Println(os.Args[1:])
+		messages, err := basedGo.Hellos(os.Args[1:])
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(messages)
+
+		return
+	}
+
+	fmt.Println("HELLO")
+
 	message, err := basedGo.Hello(os.Args[1])
 
 	if err != nil {
