@@ -1,9 +1,9 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -20,12 +20,12 @@ func getHello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
 	http.HandleFunc("/", getRoot)
 	http.HandleFunc("/hello", getHello)
 
 	fmt.Printf("Checking port is open...\n")
-	// err := http.ListenAndServe(":3333", nil)
-	_, err := net.Listen("tcp", ":3333")
+	l, err := net.Listen("tcp", ":3333")
 
 	if err != nil {
 		fmt.Printf("error listening to port :3333\n%s\n", err)
@@ -34,13 +34,17 @@ func main() {
 
 	fmt.Printf("Serrrver Operrrationnal !\n")
 
-	errServing := http.ListenAndServe(":3333", nil)
+	log.Fatal(http.Serve(l, nil))
 
-	if errors.Is(errServing, http.ErrServerClosed) {
-		fmt.Printf("server closed\n")
-	} else if err != nil {
-		fmt.Printf("error starting server: %s\n", err)
-		os.Exit(1)
-	}
+	// errServing := http.ListenAndServe(":3333", nil)
+	//
+	// if errors.Is(errServing, http.ErrServerClosed) {
+	// 	fmt.Printf("server closed\n")
+	// } else if errServing != nil {
+	// 	fmt.Printf("error starting server: %s\n", errServing)
+	// 	os.Exit(1)
+	// }
+	//
+	// fmt.Printf("Serrrver Operrrationnal !\n")
 
 }
