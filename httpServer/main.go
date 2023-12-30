@@ -9,6 +9,18 @@ import (
 	"os"
 )
 
+func serveFiles(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	p := "." + r.URL.Path
+	if p == "./" {
+		p = "./static/index.html"
+	}
+	if p == "./about" {
+		p = "./static/about.html"
+	}
+	http.ServeFile(w, r, p)
+}
+
 func getRoot(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Got / request\n")
 	io.WriteString(w, "This is my website!\n")
@@ -20,8 +32,10 @@ func getHello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	http.HandleFunc("/", getRoot)
+	http.HandleFunc("/", serveFiles)
+	http.HandleFunc("/about", serveFiles)
+	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./public"))))
+	// http.HandleFunc("/", getRoot)
 	http.HandleFunc("/hello", getHello)
 
 	fmt.Printf("Checking port is open...\n")
@@ -35,16 +49,4 @@ func main() {
 	fmt.Printf("Serrrver Operrrationnal !\n")
 
 	log.Fatal(http.Serve(l, nil))
-
-	// errServing := http.ListenAndServe(":3333", nil)
-	//
-	// if errors.Is(errServing, http.ErrServerClosed) {
-	// 	fmt.Printf("server closed\n")
-	// } else if errServing != nil {
-	// 	fmt.Printf("error starting server: %s\n", errServing)
-	// 	os.Exit(1)
-	// }
-	//
-	// fmt.Printf("Serrrver Operrrationnal !\n")
-
 }
