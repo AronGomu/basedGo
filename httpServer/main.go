@@ -1,12 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
-	"log"
-	"net"
 	"net/http"
-	"os"
+
+	"httpServer/api"
 )
 
 func serveFiles(w http.ResponseWriter, r *http.Request) {
@@ -26,27 +26,28 @@ func getRoot(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "This is my website!\n")
 }
 
-func getHello(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("Got /hello request\n")
-	io.WriteString(w, "Hello, HTTP!")
-}
-
 func main() {
 	http.HandleFunc("/", serveFiles)
 	http.HandleFunc("/about", serveFiles)
 	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./public"))))
 	// http.HandleFunc("/", getRoot)
-	http.HandleFunc("/hello", getHello)
+	http.HandleFunc("/hello", api.GetHello)
+	http.HandleFunc("/getJson", api.GetJson)
 
-	fmt.Printf("Checking port is open...\n")
-	l, err := net.Listen("tcp", ":3333")
+	listenAddr := flag.String("listenaddr", ":3333", "todo")
+	flag.Parse()
 
-	if err != nil {
-		fmt.Printf("error listening to port :3333\n%s\n", err)
-		os.Exit(1)
-	}
+	http.ListenAndServe(*listenAddr, nil)
 
-	fmt.Printf("Serrrver Operrrationnal !\n")
+	// fmt.Printf("Checking port is open...\n")
+	// l, err := net.Listen("tcp", ":3333")
 
-	log.Fatal(http.Serve(l, nil))
+	// if err != nil {
+	// 	fmt.Printf("error listening to port :3333\n%s\n", err)
+	// 	os.Exit(1)
+	// }
+	//
+	// fmt.Printf("Serrrver Operrrationnal !\n")
+	//
+	// log.Fatal(http.Serve(l, nil))
 }
