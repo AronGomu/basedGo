@@ -31,11 +31,13 @@ func main() {
 	http.HandleFunc("/about", serveFiles)
 	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./public"))))
 	// http.HandleFunc("/", getRoot)
-	http.HandleFunc("/hello", api.GetHello)
+	// http.HandleFunc("/hello", api.GetHello)
 	http.HandleFunc("/getJson", api.GetJson)
 
 	listenAddr := flag.String("listenaddr", ":3333", "todo")
 	flag.Parse()
+
+	fmt.Printf("Starting server at localhost:3333...\n")
 
 	http.ListenAndServe(*listenAddr, nil)
 
